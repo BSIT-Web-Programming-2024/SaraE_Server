@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Sara Esperas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: #333333;
+            scroll-behavior: smooth;
+            line-height: 1.6;
+            overflow: hidden;
+        }
+
+    
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; 
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff7e5f, #feb47b, #f7e8aa, #b9d9f3, #86a3f2);
+            background-size: 300% 300%;
+            animation: gradient 15s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        header {
+            text-align: center;
+            padding: 2px;
+            position: relative;
+        }
+
+        header img {
+            width: 100%; 
+            height: auto; 
+            max-height: 300px;
+            object-fit: cover; 
+        }
+
+        nav {
+            position: fixed;
+            top: 5px; 
+            left: 0;
+            width: 250px; 
+            height: calc(100% - 10px); 
+            background: rgba(255, 255, 255, 0.2); 
+            backdrop-filter: blur(10px); 
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            padding: 20px; 
+            gap: 15px; 
+            overflow-y: auto; 
+        }
+
+        nav a {
+            display: block;
+             padding: 15px 20px;
+            margin: 5px 0;
+            border-radius: 20px; 
+            background: rgba(214, 162, 95, 0.6); 
+            color: #ffffff;
+            text-decoration: none;
+             font-size: 15px; 
+            transition: background 0.3s ease;
+        }
+
+        nav a:hover {
+            background: #8d6e63; 
+        }
+
+        .main-container {
+            margin-left: 270px; 
+            padding: 20px;
+            overflow-y: auto; 
+            height: calc(100vh - 60px); 
+        }
+
+
+        section {
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            overflow: hidden; 
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h1, h2 {
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #333333; 
+        }
+        p {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #333333; 
+        }
+
+        .profile-picture {
+            width: 80px; 
+            height: 80px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            margin: 2px 0; 
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+            gap: 15px; 
+            justify-items: center; 
+        }
+
+        .gallery-item {
+            position: relative; 
+            overflow: hidden;
+            border-radius: 10px; 
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 150px; 
+            object-fit: cover; 
+            transition: transform 0.3s ease; 
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1); 
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5); 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease; 
+            border-radius: 10px; 
+        }
+
+        .gallery-item:hover .overlay {
+            opacity: 1; 
+        }
+
+        .caption {
+            color: #ffffff; 
+            font-size: 16px; 
+            text-align: center; 
+            padding: 10px; 
+        }
+
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .lightbox img {
+            max-width: 80%;
+            max-height: 80%;
+        }
+
+        .lightbox.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .lightbox .close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background: rgba(254, 176, 136, 0.7);
+            color: #ffffff;
+            position: relative;
+        }
+
+        footer a {
+            color: #8d6e63;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        footer a:hover {
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <header>
+        <header>
+            <img src="logo.png" alt="Logo" class="logo"> 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to My Portfolio</title>
+  <style>
+    .ml2 {
+      font-weight: 900;
+      font-size: 3.5em;
+      color:hsla(20, 20%, 97%, 0.952);
+
+    }
+
+    .ml2 .letter {
+      display: inline-block;
+      line-height: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="ml2">Welcome to My Portfolio</h1>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+  
+  <script>
+    var textWrapper = document.querySelector('.ml2');
+    textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+
+    anime.timeline({loop: true})
+      .add({
+        targets: '.ml2 .letter',
+        scale: [4,1],   
+        opacity: [0,1], 
+        translateZ: 0,  
+        easing: "easeOutExpo",
+        duration: 950, 
+        delay: (el, i) => 70*i  
+      }).add({
+        targets: '.ml2',
+        opacity: 0,  
+        duration: 1000, 
+        easing: "easeOutExpo",
+        delay: 1000 
+      });
+  </script>
+</body>
+
+</html>
+        </header>
+        
+        <style>
+            .logo {
+                width: 100px; 
+                height: auto; 
+                max-height: 100px;
+                object-fit: cover; 
+            }
+        </style>
+        
+    </header>
+    <nav>
+        <a href="#about">About Me</a>
+        <a href="#hobbies">Hobbies</a>
+        <a href="#fun-facts">Fun Facts</a> 
+        <a href="#gallery">Gallery</a>
+        <a href="#music">Music List</a>
+    </nav>
+    <div class="main-container">
+        <section id="about" class="visible">
+            <div class="card">
+                <h2>About Me</h2>
+                <img src="profile.jpg" alt="Profile Picture" class="profile-picture">
+                <p>Hello! I am Sara Esperas, a passionate 20-year-old currently studying for my Bachelor of Science in Information Technology at Data Center College of the Philippines. I have a keen interest in web design, and I love creating engaging online experiences. I am constantly exploring new technologies and enhancing my skills to stay ahead in the ever-evolving tech landscape.</p>
+            </div>
+        </section>
+        <section id="hobbies" class="visible">
+            <div class="card">
+                <h2>Hobbies</h2>
+                <ul>
+                    <li>Editing: Crafting and enhancing content to tell compelling stories.</li>
+                    <li>Painting & Drawing: Expressing my creativity through various artistic mediums.</li>
+                    <li>Watching Movies: Enjoying a wide range of films, including K-dramas, trial movies, and anime.</li>
+                    <li>Listening to Music: Finding inspiration and relaxation in my favorite tunes.</li>
+                    <li>Eating Sweets: Indulging my sweet tooth with delicious treats.</li>
+                </ul>
+            </div>
+        </section>
+        <section id="fun-facts" class="visible">
+            <div class="card">
+                <h2>Fun Facts</h2>
+                <ul>
+                    <li>I have a soft spot for fat cats.</li>
+                    <li>I enjoy quiet places where I can relax and think.</li>
+                    <li>I’m very observant, noticing the little details that others may overlook.</li>
+                    <li>I can spend hours watching anime and K-dramas.</li>
+                    <li>My favorite food is pizza, and I can never say no to a slice!</li>
+                </ul>
+            </div>
+        </section>
+        <section id="gallery" class="visible">
+            <div class="card">
+                <h2>Gallery</h2>
+                <div class="gallery">
+                    <div class="gallery-item">
+                        <img src="image1.jpg" alt="Image 1">
+                        <div class="overlay"><div class="caption">Making memories with my favorite people!</div></div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="image2.jfif" alt="Image 2">
+                        <div class="overlay"><div class="caption">Making memories with my favorite people!</div></div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="image3.jfif" alt="Image 3">
+                        <div class="overlay"><div class="caption">Making memories with my favorite people!</div></div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="image4.jfif" alt="Image 3">
+                        <div class="overlay"><div class="caption">Making memories with my favorite people!</div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="music" class="visible">
+            <div class="card">
+                <h2>Music List</h2>
+                <ul>
+                    <li>
+                        <strong>BUTTERFLY</strong>
+                        <audio controls>
+                            <source src="music1.mp3" type="audio/mpeg">
+                        </audio>
+                    </li>
+                    <li>
+                        <strong>MATA SA MATA</strong>
+                        <audio controls>
+                            <source src="music2.mp3" type="audio/mpeg">
+                        </audio>
+                    </li>
+                    <li>
+                        <strong> THE SHADE</strong>
+                        <audio controls>
+                            <source src="music3.mp3" type="audio/mpeg">
+                        </audio>
+                    </li>
+                    <li>
+                        <strong>PAKSA</strong>
+                        <audio controls>
+                            <source src="music4.mp3" type="audio/mpeg">
+                        </audio>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </div>
+</section> 
+<section id="contact">
+        <h2>Contact Me</h2> 
+        
+        <form id="contactForm" method="POST" action="sara.php">
+            <label for="name">Name:</label> 
+            <input type="text" id="name" name="name" required> 
+            <label for="email">Email:</label>
+             <input type="email" id="email" name="email" required>
+              <button type="submit">Submit</button>
+            </form>
+            </section>            
+            </head>
+            
+            </html>
+            
+    <div class="lightbox">
+        <span class="close">&times;</span>
+    </div>
+    <footer>
+        <p>Connect with me:</p>
+        <a href="https://www.facebook.com/profile.php?id=61561503327629" target="_blank">Facebook</a>
+        <a href="https://www.instagram.com/sarah_esperas/5" target="_blank">Instagram</a>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+   
+        particlesJS("particles-js", {
+            particles: {
+                number: {
+                    value: 80,
+                    density: {
+                        enable: true,
+                        value_area: 800
+                    }
+                },
+                color: {
+                    value: "#ffffff"
+                },
+                shape: {
+                    type: "circle",
+                    stroke: {
+                        width: 0,
+                        color: "#000000"
+                    },
+                    polygon: {
+                        nb_sides: 5
+                    },
+                    image: {
+                        src: "img/github.svg",
+                        width: 100,
+                        height: 100
+                    }
+                },
+                opacity: {
+                    value: 0.5,
+                    random: false,
+                    anim: {
+                        enable: false,
+                        speed: 1,
+                        opacity_min: 0.1,
+                        sync: false
+                    }
+                },
+                size: {
+                    value: 3,
+                    random: true,
+                    anim: {
+                        enable: false,
+                        speed: 40,
+                        size_min: 0.1,
+                        sync: false
+                    }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#ffffff",
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 6,
+                    direction: "none",
+                    random: false,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false,
+                    attract: {
+                        enable: false,
+                        rotateX: 600,
+                        rotateY: 1200
+                    }
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: "repulse"
+                    },
+                    onclick: {
+                        enable: true,
+                        mode: "push"
+                    },
+                    resize: true
+                },
+                modes: {
+                    grab: {
+                        distance: 400,
+                        line_linked: {
+                            opacity: 1
+                        }
+                    },
+                    bubble: {
+                        distance: 400,
+                        size: 40,
+                        duration: 2,
+                        opacity: 8,
+                        speed: 3
+                    },
+                    repulse: {
+                        distance: 200,
+                        duration: 0.4
+                    },
+                    push: {
+                        particles_nb: 4
+                    },
+                    remove: {
+                        particles_nb: 2
+                    }
+                }
+            },
+            retina_detect: true
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    } else {
+                        entry.target.classList.remove('visible');
+                    }
+                });
+            });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            const galleryImages = document.querySelectorAll('.gallery-item img');
+            const lightbox = document.querySelector('.lightbox');
+            const lightboxImg = document.createElement('img');
+            lightbox.appendChild(lightboxImg);
+            const closeLightbox = document.createElement('div');
+            closeLightbox.classList.add('close');
+            closeLightbox.textContent = '×';
+            lightbox.appendChild(closeLightbox);
+            
+            galleryImages.forEach(image => {
+                image.addEventListener('click', function() {
+                    lightboxImg.src = this.src; 
+                    lightbox.classList.add('visible');
+                });
+            });
+
+            closeLightbox.addEventListener('click', function() {
+                lightbox.classList.remove('visible'); 
+            });
+
+            lightbox.addEventListener('click', function() {
+                lightbox.classList.remove('visible'); 
+            });
+        });
+    </script>
+<div>
+<title>Shooting Star</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #000;
+            overflow: hidden;
+        }
+
+        .shooting-star {
+            position: absolute;
+            width: 5px;
+            height: 5px; 
+            background-color: rgb(251, 244, 249);
+            box-shadow: 0 0 8px rgb(3, 245, 241);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: shoot 1s linear forwards; 
+        }
+
+        @keyframes shoot {
+            0% {
+                opacity: 1;
+                transform: scale(1) translate(0, 0);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.5) translate(200px, 200px); 
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        function createShootingStar(x, y) {
+            const star = document.createElement("div");
+            star.classList.add("shooting-star");
+
+            star.style.left = `${x}px`;
+            star.style.top = `${y}px`;
+
+            document.body.appendChild(star);
+            setTimeout(() => {
+                star.remove();
+            }, 1000); 
+        }
+
+        document.addEventListener("mousemove", (event) => {
+            createShootingStar(event.clientX, event.clientY);
+        });
+
+        document.addEventListener("touchmove", (event) => {
+            const touch = event.touches[0];
+            createShootingStar(touch.clientX, touch.clientY);
+        });
+    </script>
+    </body>
+    </div>
+</body>
+</html>
+
